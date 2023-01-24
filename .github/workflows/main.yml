@@ -1,16 +1,12 @@
 name: My Testworkflow
-
-on: [push, workflow_dispatch]
-
-jobs:
-  Build:
-    runs-on: ubuntu-latest
-    name: test-job
-    steps:
-      - name: echo hello world
-        run: echo "hello world"
-        
-  Test:
+on: 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        type: environment
+        required: true
+      Test:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     needs: Build
@@ -18,7 +14,7 @@ jobs:
     steps:
       - run: echo "🧪 Testing..."
 
-  Load-Test:
+Load-Test:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     needs: Build
@@ -28,7 +24,7 @@ jobs:
           echo "🧪 Testing..."
           sleep 15
 
-  Production:
+Production:
     runs-on: ubuntu-latest
     needs: [Test, Load-Test]
     environment:
